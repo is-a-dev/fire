@@ -1,0 +1,29 @@
+name: pre-commit
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - run: pip install pre-commit
+
+      - name: Run pre-commit checks
+        run: pre-commit run
+
+      - name: Push changes
+        run: |
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add .
+            git commit -m "style: run pre-commit"
+            git push

@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "fire"
+version = "0.1.0"
+description = ""
+authors = ["VaibhavSys <vaibhavsys@protonmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+nextcord = "^2.6.0"
+python-dotenv = "^1.0.0"
+aiosqlite = "^0.20.0"
+pre-commit = "^3.6.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
