@@ -1,6 +1,6 @@
 name: pre-commit
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 permissions:
   contents: write
@@ -20,10 +20,18 @@ jobs:
       - name: Run pre-commit checks
         run: pre-commit run
 
-      - name: Push changes
+      - name: Stage changes
+        run: git add .
+
+      - name: Check for changes
+        id: check
+        run: |
+            git diff --cached --quiet || echo "::set-output name=changes::true"
+
+      - name: Commit and push changes
+        if: steps.check.outputs.changes == 'true'
         run: |
             git config --local user.email "actions@github.com"
             git config --local user.name "GitHub Actions"
-            git add .
             git commit -m "style: run pre-commit"
             git push
