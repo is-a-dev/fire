@@ -234,6 +234,10 @@ class Help(commands.Cog):
         guild_config = await self.bot.db.get_config(interaction.guild.id)
         if not guild_config:
             raise NoGuildConfig(interaction.guild.id)
+        thread_info = await self.bot.db.get_thread(interaction.channel.id)
+        if not thread_info:
+            raise NoThreadFound(interaction.channel.id)
+        thread_author = interaction.guild.get_member(thread_info["author_id"])
         forum: nextcord.ForumChannel = nextcord.utils.get(
             interaction.guild.channels, id=guild_config["help_forum_id"]
         )
@@ -242,7 +246,7 @@ class Help(commands.Cog):
         )
         if not thread:
             raise NoThreadFound(interaction.channel.id)
-        new_title = f"{new_title} ({interaction.user.name})"
+        new_title = f"{new_title} ({thread_author.name})"
         embed = nextcord.Embed(title="Title Change")
         embed.add_field(name="Old", value=thread.name, inline=False)
         embed.add_field(name="New", value=new_title, inline=False)
