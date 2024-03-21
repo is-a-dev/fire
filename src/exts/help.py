@@ -18,7 +18,7 @@ class OpenHelpView(nextcord.ui.View):
     async def open_help(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         thread: nextcord.Thread = await self.open_help_func(interaction.user)
         await interaction.send(f"Created help thread {thread.mention}.", ephemeral=True)
 
@@ -37,7 +37,7 @@ class CloseHelpView(nextcord.ui.View):
     async def close_help(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         if not await self.is_thread_author(interaction.channel.id, interaction.user.id):
             await interaction.send(
                 "You are not the author of this thread.", ephemeral=True
@@ -258,7 +258,7 @@ class Help(commands.Cog):
     )
     async def close(self, interaction: nextcord.Interaction):
         """Closes the help thread. (MOD ONLY)"""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         await self.close_help_thread(interaction.channel.id)
         await interaction.send("Closed help thread.", ephemeral=True)
 
