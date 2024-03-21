@@ -50,7 +50,7 @@ class Bot(commands.Bot):
 
 if __name__ == "__main__":
     load_dotenv()
-    bot = Bot(os.getenv("DATABASE_PATH"), ["exts.help", "exts.errors"])
+    bot = Bot(os.getenv("DATABASE_PATH"), ["exts.help", "exts.errors", "exts.utils"])
     try:
         bot.load_extensions()
         bot.run(os.getenv("TOKEN"))
