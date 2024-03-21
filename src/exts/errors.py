@@ -1,4 +1,4 @@
-from nextcord.ext import commands
+from nextcord.ext import commands, application_checks
 import nextcord
 from bot import Bot
 
@@ -31,16 +31,25 @@ class Errors(commands.Cog):
     ):
         # Proper error handling will be added soon :)
         error = getattr(error, "original", error)
-        embed = nextcord.Embed(
-            title="An Error Occurred",
-            description=f"An unexpected error occurred while processing your command. Please report it us.",
-            color=nextcord.Color.red(),
-        )
-        await interaction.send(embed=embed, ephemeral=True)
-        self.bot.logger.error(
-            f"An error occurred while processing an application command: {error}"
-        )
-        raise error
+        if isinstance(error, application_checks.errors.ApplicationNotOwner):
+            embed = nextcord.Embed(
+                title="An Error Occurred",
+                description="You must be the owner of this application to use this command.",
+                color=nextcord.Color.red(),
+            )
+            await interaction.send(embed=embed, ephemeral=True)
+            return
+        else:
+            embed = nextcord.Embed(
+                title="An Error Occurred",
+                description=f"An unexpected error occurred while processing your command. Please report it us.",
+                color=nextcord.Color.red(),
+            )
+            await interaction.send(embed=embed, ephemeral=True)
+            self.bot.logger.error(
+                f"An error occurred while processing an application command: {error}"
+            )
+            raise error
 
 
 def setup(bot: Bot):
