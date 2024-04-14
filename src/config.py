@@ -12,8 +12,8 @@ def replace_placeholders(string: str, placeholders: dict) -> str:
 
 TOKEN = "" or os.getenv("TOKEN")
 DATABASE_PATH = "" or os.getenv("DATABASE_PATH")
-VIEW_GUILD_ID = 830872854677422150
-VIEW_CHANNEL_ID = 1220286726711545926
+VIEW_GUILD_ID = int(os.getenv("VIEW_GUILD_ID"))
+VIEW_CHANNEL_ID = int(os.getenv("VIEW_CHANNEL_ID"))
 
 VIEW_OPEN_LABEL = "Open Thread"
 VIEW_CLOSE_LABEL = "Close Thread"
