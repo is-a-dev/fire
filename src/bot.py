@@ -33,8 +33,16 @@ class Bot(commands.Bot):
         )
         self.logger.addHandler(handler)
 
+    @tasks.loop(seconds=60)
+    async def update(self):
+        output = subprocess.check_output(["git", "pull"]).decode()
+        if "Already up to date." not in output:
+            self.logger.info("Changes detected, updating bot")
+            exit("Changes detected, updating bot")
+
     async def on_ready(self):
         await self.db.create_tables()
+        self.update.start()
         self.logger.info(f"Logged in as {self.user} ({self.user.id})")
         print(f"Logged in as {self.user} ({self.user.id})")
 
@@ -43,13 +51,6 @@ class Bot(commands.Bot):
             self.load_extension(ext)
             self.logger.info(f"Loaded extension {ext}")
             print(f"Loaded extension {ext}")
-
-    @tasks.loop(seconds=60)
-    async def update(self):
-        output = subprocess.check_output(["git", "pull"]).decode()
-        if "Already up to date." not in output:
-            self.logger.info("Changes detected, updating bot")
-            exit("Changes detected, updating bot")
 
 
 if __name__ == "__main__":
