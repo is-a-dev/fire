@@ -302,6 +302,8 @@ class Help(commands.Cog):
         )
         if not thread:
             return
+        if not self.is_thread_author(message.channel.id, message.author.id):
+            return
         if thread["has_first_message"]:
             return
         if len(message.content) < config.THREAD_MIN_CHAR:
