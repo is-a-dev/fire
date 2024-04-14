@@ -5,6 +5,14 @@ from nextcord.ext import commands
 import config
 
 
+class LinkView(nextcord.ui.View):
+    def __init__(self, label: str, link: str):
+        super().__init__()
+        self.add_item(
+            nextcord.ui.Button(style=nextcord.ButtonStyle.link, label=label, url=link)
+        )
+
+
 class OpenHelpView(nextcord.ui.View):
     def __init__(self, open_help_func: callable):
         super().__init__(timeout=None)
@@ -112,7 +120,8 @@ class Help(commands.Cog):
         )
         await thread.send(thread_close_msg)
         try:
-            await thread_author.send(thread_close_dm)
+            thread_jump_view = LinkView("Jump to Thread", thread.jump_url)
+            await thread_author.send(thread_close_dm, view=thread_jump_view)
         except Exception:
             pass
         if config.THREAD_CLOSE_LOCK:
