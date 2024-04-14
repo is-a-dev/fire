@@ -115,7 +115,9 @@ class Help(commands.Cog):
             await thread_author.send(thread_close_dm)
         except Exception:
             pass
-        await thread.edit(locked=True)
+        if config.THREAD_CLOSE_LOCK:
+            await thread.edit(locked=True)
+        await thread.edit(archived=True)
         await self.bot.db.close_thread(thread_id)
 
     @nextcord.slash_command(
@@ -310,6 +312,7 @@ class Help(commands.Cog):
             role.mention,
             delete_after=2,
             allowed_mentions=nextcord.AllowedMentions(roles=True),
+            flags=nextcord.MessageFlags(suppress_notifications=True),
         )
         await self.bot.db.set_has_first_message(message.channel.id)
 
