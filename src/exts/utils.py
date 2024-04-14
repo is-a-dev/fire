@@ -17,8 +17,14 @@ class Utils(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command()
-    async def google(self, interaction: nextcord.Interaction, query: str):
-        google_url = f"https://www.google.com/search"
+    async def google(
+        self, interaction: nextcord.Interaction, query: str, real: bool = False
+    ):
+        google_url = (
+            "https://www.google.com/search"
+            if real
+            else "https://letmegooglethat.com/search"
+        )
         params = {"q": query}
         search_url = f"{google_url}?{urllib.parse.urlencode(params)}"
         search_view = LinkView(query, search_url)
