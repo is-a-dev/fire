@@ -21,7 +21,7 @@ class Utils(commands.Cog):
         google_url = f"https://www.google.com/search"
         params = {"q": query}
         search_url = f"{google_url}?{urllib.parse.urlencode(params)}"
-        search_view = LinkView("Google Search", search_url)
+        search_view = LinkView(query, search_url)
         await interaction.send(view=search_view)
 
 
