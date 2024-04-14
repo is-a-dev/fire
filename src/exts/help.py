@@ -102,6 +102,7 @@ class Help(commands.Cog):
             "member.name": thread_author.name,
             "member.id": str(thread_author.id),
             "thread.name": thread.name,
+            "thread.mention": thread.mention,
         }
         thread_close_msg = config.replace_placeholders(
             config.THREAD_CLOSE_MSG, placeholders

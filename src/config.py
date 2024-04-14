@@ -25,7 +25,7 @@ THREAD_EMBED_TITLE = "Help Thread"
 THREAD_EMBED_RESOURCES = "- [Documentation](https://is-a.dev/docs)\n- [GitHub Repository](https://github.com/is-a-dev/register)"
 THREAD_EMBED_DESCRIPTION = "Hello member.mention,\n\nPlease describe your issue in as much detail as possible. If you would like to close this thread, click the button below."
 THREAD_CLOSE_MSG = "This thread has been closed. If you have any further questions, feel free to open a new thread."
-THREAD_CLOSE_DM = "Your thread has been closed. If you have any further questions, feel free to open a new thread."
+THREAD_CLOSE_DM = "Your thread has been closed. If you have any further questions, feel free to open a new thread.\n\n Thread: thread.mention"
 
 SETUP_HELP_ALREADY = "This guild already has a help system set up."
 SETUP_HELP_SUCCESS = "Successfully set up help system."
