@@ -1,10 +1,12 @@
 import nextcord
+from nextcord.ext import tasks
 import asyncio
 from nextcord.ext import commands
 import logging
 from database import Database
 import os
 from dotenv import load_dotenv
+import subprocess
 
 
 class Bot(commands.Bot):
@@ -41,6 +43,13 @@ class Bot(commands.Bot):
             self.load_extension(ext)
             self.logger.info(f"Loaded extension {ext}")
             print(f"Loaded extension {ext}")
+
+    @tasks.loop(seconds=60)
+    async def update(self):
+        output = subprocess.check_output(["git", "pull"]).decode()
+        if "Already up to date." not in output:
+            self.logger.info("Changes detected, updating bot")
+            exit("Changes detected, updating bot")
 
 
 if __name__ == "__main__":
