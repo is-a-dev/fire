@@ -1,6 +1,8 @@
+import urllib.parse
 import nextcord
-from nextcord.ext import commands, application_checks
+from nextcord.ext import commands
 from bot import Bot
+from src.exts.help import LinkView
 
 
 class Utils(commands.Cog):
@@ -13,6 +15,14 @@ class Utils(commands.Cog):
             title="Pong!", description=f"Latency: {round(self.bot.latency * 1000)}ms"
         )
         await interaction.send(embed=embed)
+
+    @nextcord.slash_command()
+    async def google(self, interaction: nextcord.Interaction, query: str):
+        google_url = f"https://www.google.com/search"
+        params = {"q": query}
+        search_url = f"{google_url}?{urllib.parse.urlencode(params)}"
+        search_view = LinkView("Google Search", search_url)
+        await interaction.send(view=search_view)
 
 
 def setup(bot: Bot):
