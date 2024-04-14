@@ -21,7 +21,6 @@ class Bot(commands.Bot):
         self.persistent_views_added = False
         self.bot_extensions = bot_extensions
         self.db = Database(db_path)
-        await self.db.create_tables()
 
         # Logging
         self.logger = logging.getLogger("fire")
@@ -33,6 +32,7 @@ class Bot(commands.Bot):
         self.logger.addHandler(handler)
 
     async def on_ready(self):
+        await self.db.create_tables()
         self.logger.info(f"Logged in as {self.user} ({self.user.id})")
         print(f"Logged in as {self.user} ({self.user.id})")
 
