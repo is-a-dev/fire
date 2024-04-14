@@ -32,14 +32,8 @@ class Bot(commands.Bot):
         self.logger.addHandler(handler)
 
     async def on_ready(self):
-        await self.db.connect()
         self.logger.info(f"Logged in as {self.user} ({self.user.id})")
         print(f"Logged in as {self.user} ({self.user.id})")
-
-    async def on_disconnect(self):
-        await self.db.disconnect()
-        self.logger.info("Disconnected from database")
-        print("Disconnected from database")
 
     def load_extensions(self):
         for ext in self.bot_extensions:

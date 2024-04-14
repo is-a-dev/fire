@@ -14,19 +14,6 @@ class Utils(commands.Cog):
         )
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command()
-    @application_checks.is_owner()
-    async def database(self, interaction: nextcord.Interaction):
-        pass
-
-    @database.subcommand()
-    @application_checks.is_owner()
-    async def reconnect(self, interaction: nextcord.Interaction):
-        await interaction.response.defer()
-        await self.bot.db.disconnect()
-        await self.bot.db.connect()
-        await interaction.send("Reconnected to the database.")
-
 
 def setup(bot: Bot):
     bot.add_cog(Utils(bot))
