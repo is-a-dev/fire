@@ -218,7 +218,8 @@ class Help(commands.Cog):
             title=title, description=description, color=nextcord.Color.green()
         )
         view = OpenHelpView(self.create_help_thread)
-        await interaction.send(embed=embed, view=view)
+        await interaction.send("As you say, master.", delete_after=3)
+        await interaction.channel.send(embed=embed, view=view)
 
     @nextcord.slash_command(
         default_member_permissions=nextcord.Permissions(manage_guild=True)
