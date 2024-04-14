@@ -21,6 +21,7 @@ class Bot(commands.Bot):
         self.persistent_views_added = False
         self.bot_extensions = bot_extensions
         self.db = Database(db_path)
+        self.db.create_tables()
 
         # Logging
         self.logger = logging.getLogger("fire")
