@@ -21,9 +21,7 @@ class Utils(commands.Cog):
         self, interaction: nextcord.Interaction, query: str, real: bool = False
     ):
         google_url = (
-            "https://www.google.com/search"
-            if real
-            else "https://letmegooglethat.com/search"
+            "https://www.google.com/search" if real else "https://letmegooglethat.com"
         )
         params = {"q": query}
         search_url = f"{google_url}?{urllib.parse.urlencode(params)}"
