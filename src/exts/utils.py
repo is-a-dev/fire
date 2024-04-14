@@ -2,7 +2,7 @@ import urllib.parse
 import nextcord
 from nextcord.ext import commands
 from bot import Bot
-from src.exts.help import LinkView
+from exts.help import LinkView
 
 
 class Utils(commands.Cog):
