@@ -13,6 +13,28 @@ class LinkView(nextcord.ui.View):
         )
 
 
+class ConfirmView(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    @nextcord.ui.button(label="Confirm", style=nextcord.ButtonStyle.green)
+    async def confirm(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        await interaction.send("Confirming...", ephemeral=True)
+        self.value = True
+        self.stop()
+
+    @nextcord.ui.button(label="Cancel", style=nextcord.ButtonStyle.grey)
+    async def cancel(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
+        await interaction.send("Cancelling...", ephemeral=True)
+        self.value = False
+        self.stop()
+
+
 class OpenHelpView(nextcord.ui.View):
     def __init__(self, open_help_func: callable):
         super().__init__(timeout=None)
@@ -27,6 +49,17 @@ class OpenHelpView(nextcord.ui.View):
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
         await interaction.response.defer(ephemeral=True)
+        confirm_view = ConfirmView()
+        await interaction.send(
+            "Are you sure you want to open a help thread?", view=confirm_view
+        )
+        await confirm_view.wait()
+        if confirm_view.value is None:
+            await interaction.send("Timed out.", ephemeral=True)
+            return
+        elif not confirm_view.value:
+            await interaction.send("Cancelled.", ephemeral=True)
+            return
         thread: nextcord.Thread = await self.open_help_func(interaction.user)
         await interaction.send(f"Created help thread {thread.mention}.", ephemeral=True)
 
