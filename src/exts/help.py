@@ -51,7 +51,9 @@ class OpenHelpView(nextcord.ui.View):
         await interaction.response.defer(ephemeral=True)
         confirm_view = ConfirmView()
         await interaction.send(
-            "Are you sure you want to open a help thread?", view=confirm_view
+            "Are you sure you want to open a help thread?",
+            view=confirm_view,
+            ephemeral=True,
         )
         await confirm_view.wait()
         if confirm_view.value is None:
