@@ -315,9 +315,10 @@ class Help(commands.Cog):
             return
         if thread["has_first_message"]:
             return
-        if len(message.content) < config.THREAD_MIN_CHAR:
-            await message.reply(config.THREAD_MIN_FAIL)
-            return
+        if not message.content.startswith(config.THREAD_MIN_SUPPRESS_PREFIX):
+            if len(message.content) < config.THREAD_MIN_CHAR:
+                await message.reply(config.THREAD_MIN_FAIL)
+                return
         role = nextcord.utils.get(message.guild.roles, id=guild_config["ping_role_id"])
         await message.reply(
             role.mention,
