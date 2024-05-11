@@ -363,7 +363,7 @@ class Help(commands.Cog):
             member.id, interaction.user.id, interaction.guild.id, reason
         )
         await interaction.send(
-            f"{member.mention} has been banned from the help system."
+            f"{member.mention} has been banned from the help system for {reason}."
         )
 
     @helpban.subcommand(name="remove")
