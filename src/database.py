@@ -44,6 +44,17 @@ class Database:
                 )
             """
             )
+            await self.connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS helpban (
+                    user_id BIGINT PRIMARY KEY,
+                    banner_id BIGINT NOT NULL,
+                    guild_id BIGINT NOT NULL,
+                    reason TEXT,
+                    FOREIGN KEY (guild_id) REFERENCES config(guild_id)
+                );
+            """
+            )
             await self.connection.commit()
 
         finally:
@@ -226,6 +237,79 @@ class Database:
                 await cursor.execute("SELECT * FROM threads")
                 rows = await cursor.fetchall()
                 return [dict(row) for row in rows]
+
+        finally:
+            await self.disconnect()
+
+    async def get_helpban_guild(self, guild_id: int) -> List[dict]:
+        try:
+            await self.connect()
+            async with self.connection.cursor() as cursor:
+                await cursor.execute(
+                    "SELECT * FROM helpban WHERE guild_id = ?", (guild_id,)
+                )
+                rows = await cursor.fetchall()
+                return [dict(row) for row in rows]
+
+        finally:
+            await self.disconnect()
+
+    async def get_helpban_user(self, user_id: int, guild_id: int) -> Optional[dict]:
+        try:
+            await self.connect()
+            async with self.connection.cursor() as cursor:
+                await cursor.execute(
+                    "SELECT * FROM helpban WHERE user_id = ? AND guild_id = ?",
+                    (user_id, guild_id),
+                )
+                row = await cursor.fetchone()
+                return dict(row) if row else None
+
+        finally:
+            await self.disconnect()
+
+    async def set_helpban(
+        self, user_id: int, banner_id: int, guild_id: int, reason: str
+    ) -> None:
+        try:
+            await self.connect()
+            async with self.connection.cursor() as cursor:
+                await cursor.execute(
+                    """
+                    INSERT INTO helpban (user_id, banner_id, guild_id, reason)
+                    VALUES (?, ?, ?, ?)""",
+                    (user_id, banner_id, guild_id, reason),
+                )
+                await self.connection.commit()
+
+        finally:
+            await self.disconnect()
+
+    async def remove_helpban(self, user_id: int, guild_id: int) -> None:
+        try:
+            await self.connect()
+            async with self.connection.cursor() as cursor:
+                await cursor.execute(
+                    """
+                    DELETE FROM helpban WHERE user_id = ? AND guild_id = ?""",
+                    (user_id, guild_id),
+                )
+                await self.connection.commit()
+
+        finally:
+            await self.disconnect()
+
+    async def clear_helpban(self, guild_id: int) -> None:
+        try:
+            await self.connect()
+            print(guild_id)
+            async with self.connection.cursor() as cursor:
+                await cursor.execute(
+                    """
+                    DELETE FROM helpban WHERE guild_id = ?""",
+                    (guild_id,),
+                )
+                await self.connection.commit()
 
         finally:
             await self.disconnect()

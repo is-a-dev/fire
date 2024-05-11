@@ -36,8 +36,9 @@ class ConfirmView(nextcord.ui.View):
 
 
 class OpenHelpView(nextcord.ui.View):
-    def __init__(self, open_help_func: callable):
+    def __init__(self, bot: Bot, open_help_func: callable):
         super().__init__(timeout=None)
+        self.bot = bot
         self.open_help_func = open_help_func
 
     @nextcord.ui.button(
@@ -49,6 +50,14 @@ class OpenHelpView(nextcord.ui.View):
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
         await interaction.response.defer(ephemeral=True)
+        is_help_banned = await self.bot.db.get_helpban_user(
+            interaction.user.id, interaction.guild.id
+        )
+        if is_help_banned:
+            await interaction.send(
+                "You are help banned and cannot open a help thread.", ephemeral=True
+            )
+            return
         confirm_view = ConfirmView()
         await interaction.send(
             "Are you sure you want to open a help thread?",
@@ -263,7 +272,7 @@ class Help(commands.Cog):
         embed = nextcord.Embed(
             title=title, description=description, color=nextcord.Color.green()
         )
-        view = OpenHelpView(self.create_help_thread)
+        view = OpenHelpView(self.bot, self.create_help_thread)
         await interaction.send("As you say, master.", delete_after=3)
         await interaction.channel.send(embed=embed, view=view)
 
@@ -310,10 +319,85 @@ class Help(commands.Cog):
         await self.close_help_thread(interaction.channel.id)
         await interaction.send("Closed help thread.", ephemeral=True)
 
+    @nextcord.slash_command(
+        default_member_permissions=nextcord.Permissions(manage_guild=True)
+    )
+    async def helpban(self, interaction: nextcord.Interaction):
+        pass
+
+    @helpban.subcommand(name="list")
+    async def helpban_list(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
+        helpban_list = await self.bot.db.get_helpban_guild(interaction.guild.id)
+        if not helpban_list:
+            await interaction.send(
+                "No one is help banned. But do not fear to lift the mighty ban hammer!"
+            )
+            return
+        message = "**List of users who are help banned:**\n"
+        for ban in helpban_list:
+            member = interaction.guild.get_member(ban["user_id"])
+            banner = interaction.guild.get_member(ban["banner_id"])
+            if not member:
+                member = await self.bot.fetch_user(ban["user_id"])
+            if not banner:
+                banner = await self.bot.fetch_user(ban["banner_id"])
+            message += f"{member.mention} - Banned by {banner.mention} - Reason: {ban['reason']}\n"
+        await interaction.send(message)
+
+    @helpban.subcommand(name="set")
+    async def helpban_set(
+        self,
+        interaction: nextcord.Interaction,
+        member: nextcord.Member,
+        reason: str = None,
+    ):
+        await interaction.response.defer()
+        is_already_banned = await self.bot.db.get_helpban_user(
+            member.id, interaction.guild.id
+        )
+        if is_already_banned:
+            await interaction.send("This user is already help banned.")
+            return
+        await self.bot.db.set_helpban(
+            member.id, interaction.user.id, interaction.guild.id, reason
+        )
+        await interaction.send(
+            f"{member.mention} has been banned from the help system."
+        )
+
+    @helpban.subcommand(name="remove")
+    async def helpban_remove(
+        self, interaction: nextcord.Interaction, member: nextcord.Member
+    ):
+        await interaction.response.defer()
+        is_already_banned = await self.bot.db.get_helpban_user(
+            member.id, interaction.guild.id
+        )
+        if not is_already_banned:
+            await interaction.send("This user is not help banned.")
+            return
+        await self.bot.db.remove_helpban(member.id, interaction.guild.id)
+        await interaction.send(
+            f"{member.mention} has been unbanned from the help system."
+        )
+
+    @helpban.subcommand(name="clear")
+    async def helpban_clear(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
+        helpban_list = await self.bot.db.get_helpban_guild(interaction.guild.id)
+        if not helpban_list:
+            await interaction.send(
+                "No one is help banned. But do not fear to lift the mighty ban hammer!"
+            )
+            return
+        await self.bot.db.clear_helpban(interaction.guild.id)
+        await interaction.send("All users have been unbanned from the help system.")
+
     @commands.Cog.listener(name="on_ready")
     async def persistent_views(self):
         """Adds the persistent views for the help system."""
-        open_thread_view = OpenHelpView(self.create_help_thread)
+        open_thread_view = OpenHelpView(self.bot, self.create_help_thread)
         close_thread_view = CloseHelpView(self.close_help_thread, self.is_thread_author)
         if not self.bot.persistent_views_added:
             self.bot.add_view(open_thread_view)

@@ -13,3 +13,11 @@ CREATE TABLE threads (
   closed BOOLEAN NOT NULL DEFAULT FALSE,
   FOREIGN KEY (guild_id) REFERENCES config(guild_id)
 );
+
+CREATE TABLE helpban (
+  user_id BIGINT PRIMARY KEY,
+  banner_id BIGINT NOT NULL,
+  guild_id BIGINT NOT NULL,
+  reason TEXT,
+  FOREIGN KEY (guild_id) REFERENCES config(guild_id)
+);
