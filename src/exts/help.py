@@ -3,7 +3,7 @@ from exts.errors import NoGuildConfig, NoThreadFound, AlreadyClosed
 import nextcord
 from nextcord.ext import commands
 import config
-
+import asyncio
 
 class LinkView(nextcord.ui.View):
     def __init__(self, label: str, link: str):
@@ -168,6 +168,7 @@ class Help(commands.Cog):
             await thread_author.send(thread_close_dm, view=thread_jump_view)
         except Exception:
             pass
+        await asyncio.sleep(3) # To prevent message being sent after thread being closed on rare occasions
         if config.THREAD_CLOSE_LOCK:
             await thread.edit(locked=True)
         await thread.edit(archived=True)
