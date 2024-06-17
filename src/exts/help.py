@@ -54,6 +54,15 @@ class OpenHelpView(nextcord.ui.View):
         is_help_banned = await self.bot.db.get_helpban_user(
             interaction.user.id, interaction.guild.id
         )
+        user_threads = await self.bot.db.get_user_threads(interaction.user.id)
+        open_user_threads = [thread for thread in user_threads if not thread["closed"]]
+        print(len(open_user_threads), open_user_threads)
+        if len(open_user_threads) >= config.USER_THREAD_LIMIT:
+            await interaction.send(
+                f"You have reached the maximum open threads limit of {config.USER_THREAD_LIMIT}. You currently have {len(open_user_threads)} threads open.",
+                ephemeral=True,
+            )
+            return
         if is_help_banned:
             await interaction.send(
                 "You are help banned and cannot open a help thread.", ephemeral=True

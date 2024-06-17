@@ -14,6 +14,7 @@ TOKEN = "" or os.getenv("TOKEN")
 DATABASE_PATH = "" or os.getenv("DATABASE_PATH")
 VIEW_GUILD_ID = int(os.getenv("VIEW_GUILD_ID"))
 VIEW_CHANNEL_ID = int(os.getenv("VIEW_CHANNEL_ID"))
+USER_THREAD_LIMIT = 3
 
 VIEW_OPEN_LABEL = "Open Thread"
 VIEW_CLOSE_LABEL = "Close Thread"

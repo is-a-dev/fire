@@ -217,7 +217,7 @@ class Database:
         finally:
             await self.disconnect()
 
-    async def get_author_threads(self, author_id: int) -> List[dict]:
+    async def get_user_threads(self, author_id: int) -> List[dict]:
         try:
             await self.connect()
             async with self.connection.cursor() as cursor:
