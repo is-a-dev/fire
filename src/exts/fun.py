@@ -12,6 +12,8 @@ class Utils(commands.Cog):
     async def on_message(self, message: nextcord.Message):
         if message.author.id in [598245488977903688] and "." in message.content:
             await message.add_reaction("🥚")
+        if message.author.id in [961063229168164864] and "." in message.content:
+            await message.add_reaction("🐒")
 
     @nextcord.slash_command()
     async def toss(self, interaction: nextcord.Interaction):
