@@ -9,7 +9,7 @@ class Utils(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.id in [598245488977903688]:
+        if message.author.id in [598245488977903688] and "." in message.content:
             await message.add_reaction("🥚")
 
 
