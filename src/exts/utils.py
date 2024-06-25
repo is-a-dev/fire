@@ -5,7 +5,7 @@ from bot import Bot
 from exts.help import LinkView
 
 
-class Utils(commands.Cog):
+class Fun(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
@@ -30,4 +30,4 @@ class Utils(commands.Cog):
 
 
 def setup(bot: Bot):
-    bot.add_cog(Utils(bot))
+    bot.add_cog(Fun(bot))
