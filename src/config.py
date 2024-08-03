@@ -21,7 +21,7 @@ VIEW_CLOSE_LABEL = "Close Thread"
 
 THREAD_MIN_CHAR = 50
 THREAD_MIN_SUPPRESS_PREFIX = "!suppress"
-THREAD_MIN_FAIL = "Your message must be at least 50 characters long. Please provide more detail about the issue which you are facing."
+THREAD_MIN_FAIL = f"Your message must be at least {THREAD_MIN_CHAR} characters long. Please provide more detail about the issue which you are facing."
 THREAD_NAME = "Dev Help (member.name)"
 THREAD_EMBED_TITLE = "Help Thread"
 THREAD_EMBED_RESOURCES = "- [Documentation](https://is-a.dev/docs)\n- [GitHub Repository](https://github.com/is-a-dev/register)"
